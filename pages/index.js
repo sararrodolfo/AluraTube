@@ -9,25 +9,26 @@ function HomePage() {
     const estiloDaHomePage = {
     };
     // console.log(config.playlist)
-    const [valorDoFiltro, setValordoFiltro] = React.useState("");
+    const [valorDoFiltro, setValorDoFiltro] = React.useState("");
 
     return (
         <>
-            <CSSReset />
-            <div style={{
-                display: "flex",
-                flexDirection: "column",
-                flex: 1,
-            }}>
-                {/* Prop Drilling */}
-                <Menu valorDoFiltro={valorDoFiltro} setValordoFiltro={valorDoFiltro} />
-                <Header />
-                <Timeline searchValue={valorDoFiltro} playlists={config.playlists}>
-                    Conteúdo
-                </Timeline>
-            </div>
-        </>
-    );
+        <CSSReset />
+        <div style={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            // backgroundColor: "red",
+        }}>
+            {/* Prop Drilling */}
+            <Menu valorDoFiltro={valorDoFiltro} setValorDoFiltro={setValorDoFiltro} />
+            <Header />
+            <Timeline searchValue={valorDoFiltro} playlists={config.playlists}>
+                Conteúdo
+            </Timeline>
+        </div>
+    </>
+);
 }
   
 export default HomePage
