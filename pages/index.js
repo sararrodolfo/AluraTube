@@ -1,12 +1,15 @@
+import React from "react";
 import config from "../config.json";
 import styled from "styled-components";
 import { CSSReset } from "../src/components/CSSReset";
-import Menu from "../src/components/Menu";
+import Menu from "../src/components/Menu/";
 import {StyledTimeline } from "../src/components/Timeline";
 
 function HomePage() {
     const estiloDaHomePage = {
     };
+    // console.log(config.playlist)
+    const [valorDoFiltro, setValordoFiltro] = React.useState("");
 
     return (
         <>
@@ -16,9 +19,10 @@ function HomePage() {
                 flexDirection: "column",
                 flex: 1,
             }}>
-                <Menu />
+                {/* Prop Drilling */}
+                <Menu valorDoFiltro={valorDoFiltro} setValordoFiltro={valorDoFiltro} />
                 <Header />
-                <Timeline playlists={config.playlists}>
+                <Timeline searchValue={valorDoFiltro} playlists={config.playlists}>
                     Conteúdo
                 </Timeline>
             </div>
@@ -28,14 +32,6 @@ function HomePage() {
   
 export default HomePage
 
-
-// function Menu() {
-//     return (
-//         <div>
-//             Menu
-//         </div>
-//     )
-// }
 
 const StyledHeader = styled.div`
     img {
@@ -52,9 +48,17 @@ const StyledHeader = styled.div`
         gap: 16px;
     } 
 `;
+const StyledBanner = styled.div`
+    width: 100%;
+    background-color: blue;
+    background-image: url(${({ bg }) => bg});
+    /* background-image: url(${config.bg}); */
+    height: 230px;
+`;
 function Header() {
     return (
         <StyledHeader>
+             <StyledBanner bg={config.bg} />
             <section className="user-info">
                 <img src={`https://github.com/${config.github}.png`} />
                 <div>
@@ -70,24 +74,29 @@ function Header() {
     )
 }
 
-  function Timeline(propriedades) {
-    // console.log("Dentro do componente", propriedades.playlists);
-    const playlistNames = Object.keys(propriedades.playlists);
-    //
-    //
+    function Timeline({ searchValue, ...propriedades }) {
+        // console.log("Dentro do componente", propriedades.playlists);
+        const playlistNames = Object.keys(propriedades.playlists);
+        // Statement
+        // Retorno por expressão
     return (
         <StyledTimeline>
-            {playlistNames.map((playlistName) => {
-                const videos = propriedades.playlists[playlistName];
-                console.log(playlistName);
-                console.log(videos);
-                return (
-                    <section>
-                        <h2>{playlistName}</h2>
-                        <div>
-                            {videos.map((video) => {
+        {playlistNames.map((playlistName) => {
+            const videos = propriedades.playlists[playlistName];
+            // console.log(playlistName);
+            // console.log(videos);
+            return (
+                <section key={playlistName}>
+                    <h2>{playlistName}</h2>
+                    <div>
+                        {videos.filter((video) => {
+                                const titleNormalized = video.title.toLowerCase();
+                                const searchValueNormalized = searchValue.toLowerCase();
+                                return titleNormalized.includes(searchValueNormalized)
+                            })
+                            .map((video) => {
                                 return (
-                                    <a href={video.url}>
+                                    <a key={video.url} href={video.url}>
                                         <img src={video.thumb} />
                                         <span>
                                             {video.title}
@@ -95,10 +104,10 @@ function Header() {
                                     </a>
                                 )
                             })}
-                        </div>
-                    </section>
-                )
-            })}
-        </StyledTimeline>
+                    </div>
+                </section>
+            )
+        })}
+    </StyledTimeline>
     )
-  }
+}
